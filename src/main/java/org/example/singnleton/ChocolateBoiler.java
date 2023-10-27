@@ -8,16 +8,20 @@ public class ChocolateBoiler {
     private boolean empty;
     private boolean boiled;
 
-    private static ChocolateBoiler chocolateBoiler;
+    private volatile static ChocolateBoiler chocolateBoiler;
 
     private ChocolateBoiler(){
         empty = true;
         boiled = false;
     }
 
-    public static synchronized ChocolateBoiler getChocolateBoiler(){
+    public static ChocolateBoiler getChocolateBoiler(){
         if(chocolateBoiler == null){
-            chocolateBoiler = new ChocolateBoiler();
+            synchronized (ChocolateBoiler.class){
+                if(chocolateBoiler == null){
+                    chocolateBoiler = new ChocolateBoiler();
+                }
+            }
         }
         return chocolateBoiler;
     }
